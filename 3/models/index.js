@@ -71,6 +71,7 @@ fs
         db[model.name] = model;
         model.initiate(sequelize);
       });
+      
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
