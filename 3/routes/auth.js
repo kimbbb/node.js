@@ -13,13 +13,14 @@ router.post('/join', isNotLoggedIn, join);
 router.post('/login', isNotLoggedIn, login);
 
 //get / auth/logout
-router.post('/join', isLoggedIn, logout);
-
-//get / auth/kakao
-router.post('/kakao', passport.authenticate('kakao'));
+router.get('/logout', isLoggedIn, logout);
 
 //get / auth/kakao/callback
-router.post('/kakao/callback', passport.authenticate('kakao', {
+router.get('/kakao', passport.authenticate('kakao'));
+
+
+//get / auth/kakao/callback
+router.get('/kakao/callback', passport.authenticate('kakao', {
   failureRedirect:'/?loginError=카카오로그인 실패',
 }), (req, res)=>{
   res.redirect('/');
