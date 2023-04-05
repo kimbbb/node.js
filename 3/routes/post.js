@@ -3,7 +3,7 @@ const multer = require('multer');
 const path=require('path');
 const fs = require('fs');
 
-const {afterUploadImage, uploadPost} = require('../controllers/post');
+const {afterUploadImage, uploadPost, updatePost} = require('../controllers/post');
 const {isLoggedIn}=require('../middlewares');
 
 const router = express.Router();
@@ -30,6 +30,8 @@ const upload = multer({
 
 // post /post/img
 router.post('/img', isLoggedIn, upload.single('img'), afterUploadImage);
+
+router.post("/:id/update", isLoggedIn, updatePost)
 
 //post /post
 const upload2 = multer();

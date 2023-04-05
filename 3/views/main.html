@@ -36,6 +36,7 @@
                 <button class="twit-unfollow">언팔하기</button>
               {% elif twit.User.id == user.id %}
                 <button class="twit-revision">수정하기</button>
+                <button class="twit-delete">삭제하기</button>
               {% endif %}
             
               <div class="twit-content">{{twit.content}}</div>
@@ -106,10 +107,56 @@
       });
     });
 
-    document.querySelectorAll('.twit-revision').forEach(function(tag) {
+    document.querySelectorAll('.twit-delete').forEach(function(tag) {
       tag.addEventListener('click', function() {
         
       })
     })
+
+    const onModifyTwit = (content, id) => {
+        axios.post(`/post/${id}/update`, {content}).then(() => {
+            location.reload();
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+    }
+
+
+    document.querySelectorAll('.twit-revision').forEach(function(tag) {
+      tag.addEventListener('click', function(e) {
+
+
+        const twitId = e.target.parentNode.children[1].value
+        const content = e.target.parentNode.children[4]
+        
+
+        content.innerHTML = `<div>
+            <textarea class="modifyTextarea${twitId}"></textarea>
+            <button class"modifyCancelButton${twitId}">취소</button>
+            <button class="modifySubmitButton${twitId}">제출</button>
+          </div>`
+
+        const textArea = document.querySelector(`.modifyTextarea${twitId}`) 
+
+       
+
+        document.querySelector(`.modifySubmitButton${twitId}`).addEventListener('click', (e) => {
+
+          if(textArea.value === "") {
+          
+          return;
+        }
+
+          onModifyTwit(textArea.value, twitId)
+        })
+        
+      })
+    })
+
+   
+
+
+
   </script>
 {% endblock %}

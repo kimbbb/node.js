@@ -30,3 +30,33 @@ exports.uploadPost  =async(req, res, next)=>{
     next(error)
   }
 }
+
+exports.updatePost = async(req, res) => {
+  console.log(req.params.id);
+ 
+  try {
+    const updatePost = await Post.update(
+      {content : req.body.content}
+      ,{where : {id:req.params.id}}
+      )
+    console.log("post",updatePost);
+    res.redirect("/")
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.delete=async(req, res, next)=>{
+  try{
+    const post = await Post.findOne({where:{id:req.post.id}});
+    if(post){
+      await post.destroy(parseInt(req.params.id, 10));
+      res.send('sussess');
+    }else{
+      res.status(404).send('no post');
+    }
+  }catch(error){
+    console.error(error);
+    next(error);
+  }
+}
