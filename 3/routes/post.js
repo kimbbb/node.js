@@ -3,7 +3,7 @@ const multer = require('multer');
 const path=require('path');
 const fs = require('fs');
 
-const {afterUploadImage, uploadPost, updatePost} = require('../controllers/post');
+const {afterUploadImage, uploadPost, updatePost,deletePost} = require('../controllers/post');
 const {isLoggedIn}=require('../middlewares');
 
 const router = express.Router();
@@ -37,4 +37,5 @@ router.post("/:id/update", isLoggedIn, updatePost)
 const upload2 = multer();
 router.post('/', isLoggedIn, upload2.none(), uploadPost);
 
+router.delete('/',isLoggedIn,deletePost)
 module.exports = router;

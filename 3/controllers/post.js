@@ -46,12 +46,13 @@ exports.updatePost = async(req, res) => {
   }
 }
 
-exports.delete=async(req, res, next)=>{
+exports.deletePost=async(req, res, next)=>{
   try{
-    const post = await Post.findOne({where:{id:req.post.id}});
+    const post = await Post.findOne({where:{id:req.body.id}});
     if(post){
-      await post.destroy(parseInt(req.params.id, 10));
+      await post.destroy(parseInt(req.body.id, 10));
       res.send('sussess');
+      // res.redirect(303,"/")
     }else{
       res.status(404).send('no post');
     }

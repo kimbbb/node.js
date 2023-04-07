@@ -36,7 +36,7 @@
                 <button class="twit-unfollow">언팔하기</button>
               {% elif twit.User.id == user.id %}
                 <button class="twit-revision">수정하기</button>
-                <button class="twit-delete">삭제하기</button>
+                <button class="twit-delete" onclick="deletePost({{twit.id}})">삭제하기</button>
               {% endif %}
             
               <div class="twit-content">{{twit.content}}</div>
@@ -51,6 +51,15 @@
 
 {% block script %}
   <script>
+
+    const deletePost = async(twitId) =>{
+      if(confirm("게시물을 삭제하시겠습니까?")){
+        await axios.delete('/post',{data:{id:twitId}})
+        location.reload()
+      }
+    }
+
+
     if (document.getElementById('img')) {
       document.getElementById('img').addEventListener('change', function(e) {
         const formData = new FormData();
@@ -107,11 +116,6 @@
       });
     });
 
-    document.querySelectorAll('.twit-delete').forEach(function(tag) {
-      tag.addEventListener('click', function() {
-        
-      })
-    })
 
     const onModifyTwit = (content, id) => {
         axios.post(`/post/${id}/update`, {content}).then(() => {
