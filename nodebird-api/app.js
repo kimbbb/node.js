@@ -6,9 +6,9 @@ const morgan = require('morgan');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
-const v1=require('./routes/v1');
 
 dotenv.config();
+const v1 = require('./routes/v1');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes');
 const { sequelize } = require('./models');
