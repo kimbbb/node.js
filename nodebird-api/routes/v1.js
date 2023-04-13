@@ -1,9 +1,11 @@
 const express = require('express');
 
-const { verifyToken } = require('../middlewares');
+const { verifyToken,depercated } = require('../middlewares');
 const { createToken, tokenTest, getMyPosts, getPostsByHashtag } = require('../controllers/v1');
 
 const router = express.Router();
+
+router.use(depercated);
 
 // POST /v1/token
 router.post('/token', createToken);
