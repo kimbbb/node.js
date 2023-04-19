@@ -43,7 +43,31 @@ exports.tokenTest = (req, res) => {
 };
 
 exports.getMyPosts = (req, res) => {
-  Post.findAll({ where: { userId: res.locals.decoded.id } })
+  Post.findAll({ where: { userId: res.locals.decoded.id }, include: {model: User, attribute: ['nick', 'id'],} })
+    .then((posts) => {
+      console.log(posts);
+      res.json({
+        code: 200,
+        payload: posts,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({
+        code: 500,
+        message: '서버 에러',
+      });
+    });
+};
+
+exports.getAllPosts = (req, res) => {
+  Post.findAll({
+    include: {
+      model: User,
+      attribute: ['nick', 'id'],
+    }
+  }
+  )
     .then((posts) => {
       console.log(posts);
       res.json({

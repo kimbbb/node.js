@@ -3,19 +3,93 @@
   <head>
     <title>프론트 API 요청</title>
   </head>
+  <style>
+    #hashtag-form { text-align: right; }
+    .btn {
+      display: inline-block;
+      padding: 0 5px;
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 4px;
+      background: white;
+      border: 1px solid silver;
+      color: crimson;
+      height: 37px;
+      line-height: 37px;
+      vertical-align: top;
+      font-size: 12px;
+    }
+    input[type='text'], input[type='email'], input[type='password'], textarea {
+      border-radius: 4px;
+      height: 16px;
+      padding: 10px;
+      border: 1px solid silver;
+      margin-bottom: 10px;
+    }
+    .view-list{
+      padding: 5px;
+      background: #fff;
+      border: 1px solid silver;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      color: #000;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .twit {
+      border: 1px solid silver;
+      border-radius: 4px;
+      padding: 10px;
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .twit-author { display: inline-block; font-weight: bold; margin-right: 10px; }
+  </style>
   <body>
-  <div id="result"></div>
+  <button id="my" class="view-list">내 글보기</button>
+  <button id="all" class="view-list">전체 글보기</button>
+
+  <div class="twits">
+    <form id="hashtag-form" action="/hashtag">
+      <input type="text" name="hashtag" placeholder="태그 검색">
+      <button class="btn">검색</button>
+    </form>
+  {% for twit in twits %}
+    <div class="twit">
+      <input type="hidden" value="{{twit.User.id}}" class="twit-user-id">
+      <input type="hidden" value="{{twit.id}}" class="twit-id">
+      <div class="twit-author">{{twit.User.nick}}</div>
+      {% if twit.User.id == user.id %}
+        <button class="twit-revision">수정하기</button>
+        <button class="twit-delete" >삭제하기</button>
+      {% endif %}
+      <div class="twit-content">{{twit.content}}</div>
+    </div>
+  {% endfor %}
+  </div>
+
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
     axios.post('http://localhost:8002/v2/token', {
       clientSecret: '{{key}}',
     })
-      .then((res) => {
-        document.querySelector('#result').textContent = JSON.stringify(res.data);
+    .then((res) => {
+        
       })
-      .catch((err) => {
-        console.error(err);
-      });
+    .catch((err) => {
+      console.error(err);
+    });
+
+    document.getElementById('all').addEventListener('click', ()=>{
+      location.href='/'
+    })
+
+    document.getElementById('my').addEventListener('click', ()=>{
+      location.href='/myposts'
+    })
+
   </script>
   </body>
 </html>

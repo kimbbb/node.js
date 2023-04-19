@@ -26,7 +26,21 @@ const request = async (req, api) => {
 exports.getMyPosts = async (req, res, next) => {
   try {
     const result = await request(req, '/posts/my');
-    res.json(result.data);
+    
+    res.render("main", {twits : result.data.payload})
+
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+exports.getAllPosts = async (req, res, next) => {
+  try {
+    const result = await request(req, '/posts/all');
+    
+    res.render("main", {twits : result.data.payload})
+
   } catch (error) {
     console.error(error);
     next(error);

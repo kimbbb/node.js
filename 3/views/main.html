@@ -25,6 +25,7 @@
           <input type="text" name="hashtag" placeholder="태그 검색">
           <button class="btn">검색</button>
         </form>
+
         {% for twit in twits %}
           <div class="twit">
             <input type="hidden" value="{{twit.User.id}}" class="twit-user-id">
@@ -32,14 +33,13 @@
             <div class="twit-author">{{twit.User.nick}}</div>
             {% if not followerIdList.includes(twit.User.id) and twit.User.id !== user.id %}
               <button class="twit-follow">팔로우하기</button>
-              {% elif followerIdList.includes(twit.User.id) and twit.User.id !== user.id %}
-                <button class="twit-unfollow">언팔하기</button>
-              {% elif twit.User.id == user.id %}
-                <button class="twit-revision">수정하기</button>
-                <button class="twit-delete" onclick="deletePost({{twit.id}})">삭제하기</button>
-              {% endif %}
-            
-              <div class="twit-content">{{twit.content}}</div>
+            {% elif followerIdList.includes(twit.User.id) and twit.User.id !== user.id %}
+              <button class="twit-unfollow">언팔하기</button>
+            {% elif twit.User.id == user.id %}
+              <button class="twit-revision">수정하기</button>
+              <button class="twit-delete" onclick="deletePost({{twit.id}})">삭제하기</button>
+            {% endif %}
+            <div class="twit-content">{{twit.content}}</div>
             {% if twit.img %}
               <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
             {% endif %}
