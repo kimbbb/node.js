@@ -1,15 +1,22 @@
 const express = require('express');
-const {searchByHashtag, getMyPosts, renderMain, getAllPosts } = require('../controllers');
+const {
+  test,
+  getMyPosts,
+  getPostsByHashtag,
+  //renderMain,
+  getAllPosts,
+  editPost,
+  deletePost,
+} = require('../controllers');
 
 const router = express.Router();
 
+router.get('/test', test);
 
 router.get('/myposts', getMyPosts);
-
+router.get('/search', getPostsByHashtag);
 router.get('/', getAllPosts);
+router.post('/post/:id', editPost);
+router.delete('/post/:id', deletePost);
 
-router.get('/search/:hashtag', searchByHashtag);
-
-// router.get('/', renderMain);
-
-module.exports=router;
+module.exports = router;

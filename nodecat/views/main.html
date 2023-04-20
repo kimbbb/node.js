@@ -1,95 +1,123 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>프론트 API 요청</title>
-  </head>
-  <style>
-    #hashtag-form { text-align: right; }
-    .btn {
-      display: inline-block;
-      padding: 0 5px;
-      text-decoration: none;
-      cursor: pointer;
-      border-radius: 4px;
-      background: white;
-      border: 1px solid silver;
-      color: crimson;
-      height: 37px;
-      line-height: 37px;
-      vertical-align: top;
-      font-size: 12px;
-    }
-    input[type='text'], input[type='email'], input[type='password'], textarea {
-      border-radius: 4px;
-      height: 16px;
-      padding: 10px;
-      border: 1px solid silver;
-      margin-bottom: 10px;
-    }
-    .view-list{
-      padding: 5px;
-      background: #fff;
-      border: 1px solid silver;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      color: #000;
-      cursor: pointer;
-      font-size: 12px;
-    }
+    <head>
+        <link rel="stylesheet" href="/main.css">
+    </head>
+    <style>
 
-    .twit {
-      border: 1px solid silver;
-      border-radius: 4px;
-      padding: 10px;
-      position: relative;
-      margin-bottom: 10px;
-    }
+        .twitbtn{
+            padding: 3px;
+            background: #fff;
+            border: 1px solid silver;
+            border-radius: 5px;
+            font-size: 12px;
+            color: crimson;;
+            cursor: pointer;
+            text-decoration: none;
+        }
 
-    .twit-author { display: inline-block; font-weight: bold; margin-right: 10px; }
-  </style>
-  <body>
-  <button id="my" class="view-list">내 글보기</button>
-  <button id="all" class="view-list">전체 글보기</button>
+        .link{
+            padding: 5px;
+            background: #fff;
+            border: 1px solid silver;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
 
-  <div class="twits">
-    <form id="hashtag-form" action="/hashtag">
-      <input type="text" name="hashtag" placeholder="태그 검색">
-      <button class="btn">검색</button>
-    </form>
-  {% for twit in twits %}
-    <div class="twit">
-      <input type="hidden" value="{{twit.User.id}}" class="twit-user-id">
-      <input type="hidden" value="{{twit.id}}" class="twit-id">
-      <div class="twit-author">{{twit.User.nick}}</div>
-      {% if twit.User.id == user.id %}
-        <button class="twit-revision">수정하기</button>
-        <button class="twit-delete" >삭제하기</button>
-      {% endif %}
-      <div class="twit-content">{{twit.content}}</div>
-    </div>
-  {% endfor %}
-  </div>
+        .twits{
+            margin-top: 20px;
+        }
 
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script>
-    axios.post('http://localhost:8002/v2/token', {
-      clientSecret: '{{key}}',
-    })
-    .then((res) => {
-        
-      })
-    .catch((err) => {
-      console.error(err);
-    });
+        .twit{
+            border: 1px solid silver;
+            border-radius: 4px;
+            padding: 10px;
+            position: relative;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            width: 40%;
+        }
 
-    document.getElementById('all').addEventListener('click', ()=>{
-      location.href='/'
-    })
+        .btn {
+            display: inline-block;
+            padding: 0 15px;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 4px;
+            background: white;
+            border: 1px solid silver;
+            color: crimson;
+            height: 37px;
+            line-height: 37px;
+            vertical-align: top;
+            font-size: 12px;
+            }
+        input[type='text'] {
+            border-radius: 4px;
+            height: 16px;
+            padding: 10px;
+            border: 1px solid silver;
+        }
 
-    document.getElementById('my').addEventListener('click', ()=>{
-      location.href='/myposts'
-    })
+        .twit-author{
+            margin-right: 10px;
+        }
 
-  </script>
-  </body>
+        .twit-content{
+            margin: 10px 0px;
+        }
+
+        .flex{
+            display: flex;
+        }
+    </style>
+    <body>
+        <div class="container">
+            <a class="link" href="/">전체글</a>
+            <a class="link" href="/myposts">내 글</a>
+            <div class="twits">
+                <form id="hashtag-form" action="/search">
+                    <input type="text" name="hashtag" placeholder="태그 검색" value="{{hashtag}}">
+                    <button class="btn">검색</button>
+                </form>
+                {% for post in posts %}
+                <div class="twit">
+                    <input type="hidden" class="twit-id" value="{{post.id}}">
+                    <div class="flex">
+                        <div class="twit-author">{{post.User.nick}}</div>
+                        {% if title == 'myposts' %}
+                        <button class="twit-delete twitbtn">삭제하기</button>
+                        {% endif %}
+                    </div>
+                    <div class="twit-content">{{post.content}}</div>
+                    {% if title == 'myposts' %}
+                    <form method="post" action="/post/{{post.id}}">
+                        <input type="text" name="content">
+                        <input type="submit" value="수정하기" class="twit-edit twitbtn">
+                    </form>
+                    {% endif %}
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+        document.querySelectorAll('.twit-delete').forEach(function(tag) {
+            tag.addEventListener('click', function() {
+                const postId = tag.parentNode.querySelector('.twit-id').value;
+                if (confirm(`삭제하시겠습니까?`)) {
+                    axios.delete(`/post/${postId}`)
+                    .then(() => {
+                        location.reload();
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                }
+            });
+        });
+    </script>
+    </body>
 </html>
