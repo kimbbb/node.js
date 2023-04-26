@@ -1,123 +1,133 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="/main.css">
-    </head>
-    <style>
+<head>
+    <meta charset="UTF-8">
+    <title>nodecat</title>
+</head>
+<style>
+    .twitbtn {
+        padding: 3px;
+        background: #fff;
+        border: 1px solid silver;
+        border-radius: 5px;
+        font-size: 12px;
+        color: crimson;
+        cursor: pointer;
+        text-decoration: none;
+    }
 
-        .twitbtn{
-            padding: 3px;
-            background: #fff;
-            border: 1px solid silver;
-            border-radius: 5px;
-            font-size: 12px;
-            color: crimson;;
-            cursor: pointer;
-            text-decoration: none;
-        }
+    a {
+        padding: 5px;
+        background: #fff;
+        border: 1px solid silver;
+        border-radius: 5px;
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+    }
 
-        .link{
-            padding: 5px;
-            background: #fff;
-            border: 1px solid silver;
-            border-radius: 5px;
-            font-size: 12px;
-            cursor: pointer;
-            text-decoration: none;
-        }
+    .twit-author{
+        font-weight: 600;
+        display: inline-block;
+    }
 
-        .twits{
-            margin-top: 20px;
-        }
+    .twits {
+        margin-top: 20px;
+    }
 
-        .twit{
-            border: 1px solid silver;
-            border-radius: 4px;
-            padding: 10px;
-            position: relative;
-            margin-bottom: 10px;
-            margin-top: 10px;
-            width: 40%;
-        }
+    .twit {
+        border: 1px solid silver;
+        border-radius: 4px;
+        padding: 10px;
+        position: relative;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        width: 40%;
+    }
 
-        .btn {
-            display: inline-block;
-            padding: 0 15px;
-            text-decoration: none;
-            cursor: pointer;
-            border-radius: 4px;
-            background: white;
-            border: 1px solid silver;
-            color: crimson;
-            height: 37px;
-            line-height: 37px;
-            vertical-align: top;
-            font-size: 12px;
-            }
-        input[type='text'] {
-            border-radius: 4px;
-            height: 16px;
-            padding: 10px;
-            border: 1px solid silver;
-        }
+    .btn {
+        display: inline-block;
+        padding: 0 15px;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 4px;
+        background: white;
+        border: 1px solid silver;
+        color: crimson;
+        height: 37px;
+        line-height: 37px;
+        vertical-align: top;
+        font-size: 12px;
+    }
 
-        .twit-author{
-            margin-right: 10px;
-        }
+    input[type='text'] {
+        border-radius: 4px;
+        height: 16px;
+        padding: 10px;
+        border: 1px solid silver;
+        margin-right: 6px;
+    }
 
-        .twit-content{
-            margin: 10px 0px;
-        }
+    .twit-content {
+        margin: 14px 0px;
+    }
 
-        .flex{
-            display: flex;
-        }
-    </style>
-    <body>
-        <div class="container">
-            <a class="link" href="/">전체글</a>
-            <a class="link" href="/myposts">내 글</a>
-            <div class="twits">
-                <form id="hashtag-form" action="/search">
-                    <input type="text" name="hashtag" placeholder="태그 검색" value="{{hashtag}}">
-                    <button class="btn">검색</button>
+    #hashtag-form{
+        width: 40%;
+        padding-left: 20px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .twit-edit{
+        color: #000;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <a href="/">전체글</a>
+        <a href="/myposts">내 글</a>
+        <div class="twits">
+            <form id="hashtag-form" action="/search">
+                <input type="text" name="hashtag" placeholder="태그 검색" value="{{hashtag}}">
+                <button class="btn">검색</button>
+            </form>
+            {% for post in posts %}
+            <div class="twit">
+                <input type="hidden" class="twit-id" value="{{post.id}}">
+                <div class="twit-author">{{post.User.nick}}</div>
+                {% if title == 'myposts' %}
+                <button class="twit-delete twitbtn">삭제하기</button>
+                {% endif %}
+                <div class="twit-content">{{post.content}}</div>
+                {% if title == 'myposts' %}
+                <form method="post" action="/post/{{post.id}}">
+                    <input type="text" name="content">
+                    <input type="submit" value="수정하기" class="twit-edit twitbtn">
                 </form>
-                {% for post in posts %}
-                <div class="twit">
-                    <input type="hidden" class="twit-id" value="{{post.id}}">
-                    <div class="flex">
-                        <div class="twit-author">{{post.User.nick}}</div>
-                        {% if title == 'myposts' %}
-                        <button class="twit-delete twitbtn">삭제하기</button>
-                        {% endif %}
-                    </div>
-                    <div class="twit-content">{{post.content}}</div>
-                    {% if title == 'myposts' %}
-                    <form method="post" action="/post/{{post.id}}">
-                        <input type="text" name="content">
-                        <input type="submit" value="수정하기" class="twit-edit twitbtn">
-                    </form>
-                    {% endif %}
-            </div>
-            {% endfor %}
-            </div>
+                {% endif %}
         </div>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script>
-        document.querySelectorAll('.twit-delete').forEach(function(tag) {
-            tag.addEventListener('click', function() {
-                const postId = tag.parentNode.querySelector('.twit-id').value;
-                if (confirm(`삭제하시겠습니까?`)) {
-                    axios.delete(`/post/${postId}`)
-                    .then(() => {
-                        location.reload();
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
-                }
-            });
+        {% endfor %}
+        </div>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+    document.querySelectorAll('.twit-delete').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const postId = tag.parentNode.querySelector('.twit-id').value;
+            if (confirm(`삭제하시겠습니까?`)) {
+                axios.delete(`/post/${postId}`)
+                .then(() => {
+                    location.reload();
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            }
         });
-    </script>
-    </body>
+    });
+</script>
+</body>
+
 </html>
